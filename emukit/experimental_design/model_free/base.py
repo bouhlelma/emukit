@@ -6,6 +6,7 @@ class ModelFreeDesignBase(object):
     """
     Base class for all model free experiment designs
     """
+
     def __init__(self, parameter_space):
         self.parameter_space = parameter_space
         self.gpyopt_design_space = self.parameter_space.convert_to_gpyopt_design_space()

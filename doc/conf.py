@@ -22,10 +22,12 @@ from os.path import abspath, dirname
 # -- Mock graphing modules - workaround for optinal dependencies as well as for wrong behavior of some required ones
 from unittest.mock import MagicMock
 
+
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
+
 
 MOCK_MODULES = ['matplotlib', 'pylab', 'matplotlib.pyplot', 'pyrfr.regression', 'pybnn']
 sys.modules.update((module_name, Mock()) for module_name in MOCK_MODULES)

@@ -19,7 +19,8 @@ class IntegratedVarianceReduction(Acquisition):
     Acquisition function for integrated variance reduction
     """
 
-    def __init__(self, model: ICalculateVarianceReduction, space: ParameterSpace, x_monte_carlo=None, num_monte_carlo_points: int=int(1e5)) -> None:
+    def __init__(self, model: ICalculateVarianceReduction, space: ParameterSpace,
+                 x_monte_carlo=None, num_monte_carlo_points: int = int(1e5)) -> None:
         """
         :param model: The emulation model
         :param space: The parameter space to select points within

@@ -20,6 +20,7 @@ class StoppingCondition(abc.ABC):
 
 class FixedIterationsStoppingCondition(StoppingCondition):
     """ Stops after a fixed number of iterations """
+
     def __init__(self, i_max: int) -> None:
         """
         :param i_max: Maximum number of function observations within the loop, excluding initial points

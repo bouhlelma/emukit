@@ -11,6 +11,7 @@ class DiscreteParameter(object):
     """
     A parameter that takes a discrete set of values where the order and spacing of values is important
     """
+
     def __init__(self, name: str, domain: Iterable):
         """
         :param name: Name of parameter

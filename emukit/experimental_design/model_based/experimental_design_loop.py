@@ -12,7 +12,7 @@ from ...core.parameter_space import ParameterSpace
 
 class ExperimentalDesignLoop(OuterLoop):
     def __init__(self, space: ParameterSpace, model: IModel, acquisition: Acquisition = None,
-                 update_interval: int = 1, batch_size: int=1):
+                 update_interval: int = 1, batch_size: int = 1):
         """
         An outer loop class for use with Experimental design
 
@@ -33,7 +33,8 @@ class ExperimentalDesignLoop(OuterLoop):
         if batch_size == 1:
             candidate_point_calculator = Sequential(acquisition, acquisition_optimizer)
         elif batch_size > 1:
-            candidate_point_calculator = GreedyBatchPointCalculator(model, acquisition, acquisition_optimizer, batch_size)
+            candidate_point_calculator = GreedyBatchPointCalculator(
+                model, acquisition, acquisition_optimizer, batch_size)
         else:
             raise ValueError('Batch size value of ' + str(batch_size) + ' is invalid.')
 

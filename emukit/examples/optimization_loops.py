@@ -13,7 +13,7 @@ from .enums import AcquisitionType, ModelType
 
 def create_bayesian_optimization_loop(x_init: np.ndarray, y_init: np.ndarray, parameter_space: ParameterSpace,
                                       acquisition_type: AcquisitionType, model_type: ModelType,
-                                      model_kwargs: dict=None) -> OuterLoop:
+                                      model_kwargs: dict = None) -> OuterLoop:
     """
     Creates Bayesian optimization loop for Bayesian neural network or random forest models.
 

@@ -18,7 +18,6 @@ class BayesianOptimizationLoop(OuterLoop):
     def __init__(self, model: IModel, space: ParameterSpace, X_init: np.array, Y_init: np.array,
                  acquisition: Acquisition = None, candidate_point_calculator: CandidatePointCalculator = None,
                  model_updater: ModelUpdater = None):
-
         """
         Emukit class that implement a loop for building modular Bayesian optimization
 

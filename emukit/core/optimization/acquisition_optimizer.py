@@ -29,6 +29,7 @@ class AcquisitionOptimizerBase:
 
 class AcquisitionOptimizer(AcquisitionOptimizerBase):
     """ Optimizes the acquisition function """
+
     def __init__(self, space: ParameterSpace, **kwargs) -> None:
         self.space = space
         self.gpyopt_space = space.convert_to_gpyopt_design_space()
@@ -44,7 +45,7 @@ class AcquisitionOptimizer(AcquisitionOptimizerBase):
         """
 
         # Take negative of acquisition function because they are to be maximised and the optimizers minimise
-        f = lambda x: -acquisition.evaluate(x)
+        def f(x): return -acquisition.evaluate(x)
 
         self.gpyopt_acquisition_optimizer.context_manager = GPyOpt.optimization.acquisition_optimizer.ContextManager(
             self.gpyopt_space, context)

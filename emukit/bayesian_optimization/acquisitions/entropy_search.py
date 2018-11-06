@@ -22,7 +22,6 @@ class EntropySearch(Acquisition):
     def __init__(self, model: Union[IModel, IEntropySearchModel], space: ParameterSpace, sampler: McmcSampler = None,
                  num_samples: int = 100, num_representer_points: int = 50,
                  proposal_function: Acquisition = None, burn_in_steps: int = 50) -> None:
-
         """
         Entropy Search acquisition function approximates the distribution of the global
         minimum and tries to decrease its entropy. See this paper for more details:

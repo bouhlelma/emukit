@@ -19,6 +19,8 @@ except ImportError:
 
 import torch
 import torch.nn as nn
+
+
 def get_default_network(input_dimensionality: int) -> torch.nn.Module:
     class AppendLayer(nn.Module):
         def __init__(self, bias=True, *args, **kwargs):
@@ -32,9 +34,9 @@ def get_default_network(input_dimensionality: int) -> torch.nn.Module:
             return torch.cat((x, self.bias * torch.ones_like(x)), dim=1)
 
     def init_weights(module):
-        if type(module) == AppendLayer:
+        if isinstance(module, AppendLayer):
             nn.init.constant_(module.bias, val=np.log(1e-3))
-        elif type(module) == nn.Linear:
+        elif isinstance(module, nn.Linear):
             nn.init.kaiming_normal_(module.weight, mode="fan_in", nonlinearity="linear")
             nn.init.constant_(module.bias, val=0.0)
 

@@ -50,10 +50,10 @@ class TestNonLinearModel:
         base_kernel = GPy.kern.RBF
         with pytest.raises(TypeError):
             emukit.multi_fidelity.models.NonLinearMultiFidelityModel([np.random.rand(5, 3)], [np.random.rand(5, 3)], base_kernel,
-                                                        n_samples=70)
+                                                                     n_samples=70)
         with pytest.raises(TypeError):
             emukit.multi_fidelity.models.NonLinearMultiFidelityModel([np.random.rand(5, 3)], np.random.rand(5, 3), base_kernel,
-                                                        n_samples=70)
+                                                                     n_samples=70)
 
     def test_get_fmin(self, non_linear_model):
         """

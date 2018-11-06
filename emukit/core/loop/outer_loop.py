@@ -32,6 +32,7 @@ class OuterLoop(object):
     This object exposes the following events. See ``emukit.core.event_handler`` for details of how to subscribe:
          - ``iteration_end_event`` called at the end of each iteration
     """
+
     def __init__(self, candidate_point_calculator: CandidatePointCalculator, model_updater: ModelUpdater,
                  loop_state: LoopState = None) -> None:
         """
@@ -47,7 +48,7 @@ class OuterLoop(object):
         self.iteration_end_event = EventHandler()
 
     def run_loop(self, user_function: Union[UserFunction, Callable], stopping_condition: Union[StoppingCondition, int],
-                 context: dict=None) -> None:
+                 context: dict = None) -> None:
         """
         :param user_function: The function that we are emulating
         :param stopping_condition: If integer - a number of iterations to run, if object - a stopping condition object

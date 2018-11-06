@@ -13,7 +13,6 @@ from ...core.acquisition import Acquisition
 class NegativeLowerConfidenceBound(Acquisition):
 
     def __init__(self, model: Union[IModel, IDifferentiable], beta: np.float64 = np.float64(1)) -> None:
-
         """
         This acquisition computes the negative lower confidence bound for a given input point. This is the same
         as optimizing the upper confidence bound if we would maximize instead of minimizing the objective function.
@@ -50,7 +49,7 @@ class NegativeLowerConfidenceBound(Acquisition):
         standard_deviation = np.sqrt(variance)
 
         dmean_dx, dvariance_dx = self.model.get_prediction_gradients(x)
-        dstandard_deviation_dx = dvariance_dx / (2*standard_deviation)
+        dstandard_deviation_dx = dvariance_dx / (2 * standard_deviation)
 
         lcb = - (mean - self.beta * standard_deviation)
 

@@ -16,6 +16,7 @@ class GPyModelWrapper(IModel, IDifferentiable, ICalculateVarianceReduction, IEnt
     """
     This is a thin wrapper around GPy models to allow users to plug GPy models into Emukit
     """
+
     def __init__(self, gpy_model):
         self.model = gpy_model
 
@@ -57,7 +58,7 @@ class GPyModelWrapper(IModel, IDifferentiable, ICalculateVarianceReduction, IEnt
         variance_prediction = self.model.predict(x_train_new)[1]
         return covariance**2 / variance_prediction
 
-    def predict_covariance(self, X: np.ndarray, with_noise: bool=True) -> np.ndarray:
+    def predict_covariance(self, X: np.ndarray, with_noise: bool = True) -> np.ndarray:
         """
         Calculates posterior covariance between points in X
         :param X: Array of size n_points x n_dimensions containing input locations to compute posterior covariance at
@@ -100,6 +101,7 @@ class GPyMultiOutputWrapper(IModel, IDifferentiable, ICalculateVarianceReduction
     A wrapper around GPy multi-output models.
     X inputs should have the corresponding output index as the last column in the array
     """
+
     def __init__(self, gpy_model: GPy.core.GP, n_outputs: int, n_optimization_restarts: int):
         """
         :param gpy_model: GPy multi-output model

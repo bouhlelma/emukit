@@ -14,8 +14,9 @@ class GPyLinearMultiFidelityModel(GPy.core.GP):
     """
     A thin wrapper around GPy.core.GP that does some input checking and provides a default likelihood
     """
+
     def __init__(self, X: np.ndarray, Y: np.ndarray, kernel: GPy.kern.Kern, n_fidelities: int,
-                 likelihood: GPy.likelihoods.Likelihood=None):
+                 likelihood: GPy.likelihoods.Likelihood = None):
         """
 
         :param X: Training data features with fidelity input appended as last column

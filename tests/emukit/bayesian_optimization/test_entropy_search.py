@@ -32,6 +32,7 @@ def test_entropy_search_shape(acquisition):
 
     assert (result.shape == (2, 1))
 
+
 def test_entropy_search_update_pmin(acquisition):
     logP = acquisition.update_pmin()
 

@@ -48,7 +48,7 @@ def test_batch_experimental_design_loop():
             # speed up test by skipping the actual hyper-parameter optimization
             pass
 
-    user_function = lambda x: x
+    def user_function(x): return x
 
     space = ParameterSpace([ContinuousParameter('x', 0, 3)])
 

@@ -10,6 +10,7 @@ import numpy as np
 
 class Acquisition(abc.ABC):
     """ Acquisition base class """
+
     def __add__(self, other: 'Acquisition') -> 'Sum':
         """
         Overloads self + other
@@ -71,6 +72,7 @@ class Quotient(Acquisition):
     """
     Acquisition for division of two acquisition functions
     """
+
     def __init__(self, numerator: Acquisition, denominator: Acquisition):
         """
 
@@ -103,7 +105,8 @@ class Quotient(Acquisition):
 
         value = numerator_value / denominator_value
         # Calculate gradient of acquisition
-        gradient = (numerator_gradients / denominator_value) - ((denominator_gradients * numerator_value) / (denominator_value**2))
+        gradient = (numerator_gradients / denominator_value) - \
+            ((denominator_gradients * numerator_value) / (denominator_value**2))
         return value, gradient
 
     @property
@@ -120,6 +123,7 @@ class Product(Acquisition):
     """
     Acquisition for product of two or more acquisition functions
     """
+
     def __init__(self, acquisition_1: Acquisition, acquisition_2: Acquisition):
         """
 

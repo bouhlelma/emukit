@@ -159,7 +159,7 @@ def min_factor(Mu, Sigma, k, gamma=1):
         dlogZdMudMu = -A
         yield dlogZdMudMu
         dlogZdSigma = -A - 2 * np.outer(r, Ab.T) + np.outer(r, r.T) \
-                      + np.outer(btA.T, Ab.T)
+            + np.outer(btA.T, Ab.T)
         dlogZdSigma2 = np.zeros_like(dlogZdSigma)
         np.fill_diagonal(dlogZdSigma2, np.diagonal(dlogZdSigma))
         dlogZdSigma = 0.5 * (dlogZdSigma + dlogZdSigma.T - dlogZdSigma2)
@@ -204,7 +204,7 @@ def lt_factor(s, l, M, V, mp, p, gamma):
                             "Resulting variance contains NaN")
         # % there is a problem here, when z is very large
         logS = lP - 0.5 * (np.log(beta) - np.log(pnew) - np.log(cVnic)) \
-               + (alpha * alpha) / (2 * beta) * cVnic
+            + (alpha * alpha) / (2 * beta) * cVnic
 
     elif exit_flag == -1:
         d = np.NAN

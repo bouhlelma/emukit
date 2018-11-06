@@ -9,6 +9,7 @@ class UserFunctionResult(object):
     """
     A class that records the inputs, outputs and meta-data of an evaluation of the user function.
     """
+
     def __init__(self, X: np.ndarray, Y: np.ndarray) -> None:
         """
         :param X: Function input, 1 by function input dimension

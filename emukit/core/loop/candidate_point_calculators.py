@@ -15,7 +15,7 @@ from ..optimization.acquisition_optimizer import AcquisitionOptimizerBase
 class CandidatePointCalculator(abc.ABC):
     """ Computes the next point(s) for function evaluation """
     @abc.abstractmethod
-    def compute_next_points(self, loop_state: LoopState, context: dict=None) -> np.ndarray:
+    def compute_next_points(self, loop_state: LoopState, context: dict = None) -> np.ndarray:
         """
         :param loop_state: Object that contains current state of the loop
         :param context: Contains variables to fix through optimization of acquisition function. The dictionary key is
@@ -27,6 +27,7 @@ class CandidatePointCalculator(abc.ABC):
 
 class Sequential(CandidatePointCalculator):
     """ This candidate point calculator chooses one candidate point at a time """
+
     def __init__(self, acquisition: Acquisition, acquisition_optimizer: AcquisitionOptimizerBase) -> None:
         """
         :param acquisition: Acquisition function to maximise
@@ -35,7 +36,7 @@ class Sequential(CandidatePointCalculator):
         self.acquisition = acquisition
         self.acquisition_optimizer = acquisition_optimizer
 
-    def compute_next_points(self, loop_state: LoopState, context: dict=None) -> np.ndarray:
+    def compute_next_points(self, loop_state: LoopState, context: dict = None) -> np.ndarray:
         """
         Computes point(s) to evaluate next
 
@@ -55,8 +56,9 @@ class GreedyBatchPointCalculator(CandidatePointCalculator):
     the end of collecting a batch but if you use a model where training the model with the same data leads to different
     predictions, the model behaviour will be modified.
     """
+
     def __init__(self, model: IModel, acquisition: Acquisition, acquisition_optimizer: AcquisitionOptimizerBase,
-                 batch_size: int=1):
+                 batch_size: int = 1):
         """
         :param model: Model that is used by the acquisition function
         :param acquisition: Acquisition to be optimized to find each point in batch
@@ -70,7 +72,7 @@ class GreedyBatchPointCalculator(CandidatePointCalculator):
         self.acquisition_optimizer = acquisition_optimizer
         self.batch_size = batch_size
 
-    def compute_next_points(self, loop_state: LoopState, context: dict=None) -> np.ndarray:
+    def compute_next_points(self, loop_state: LoopState, context: dict = None) -> np.ndarray:
         """
         :param loop_state: Object containing history of the loop
         :param context: Contains variables to fix through optimization of acquisition function. The dictionary key is

@@ -25,7 +25,6 @@ class GPBayesianOptimization(BayesianOptimizationLoop):
                  acquisition_type: AcquisitionType = AcquisitionType.EI, normalize_Y: bool = True,
                  acquisition_optimizer_type: OptimizerType = OptimizerType.LBFGS,
                  model_update_interval: int = int(1)) -> None:
-
         """
         Generic class to run Bayesian optimization with GPyRegression model.
 

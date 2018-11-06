@@ -20,6 +20,7 @@ from .user_function_result import UserFunctionResult
 import logging
 _log = logging.getLogger(__name__)
 
+
 class UserFunction(abc.ABC):
     """ The user supplied function is interrogated as part of the outer loop """
     @abc.abstractmethod
@@ -29,6 +30,7 @@ class UserFunction(abc.ABC):
 
 class UserFunctionWrapper(UserFunction):
     """ Wraps a user-provided python function. """
+
     def __init__(self, f: Callable):
         """
         :param f: A python function that takes in a 2d numpy ndarray of inputs and returns a 2d numpy ndarray of outputs.
@@ -43,25 +45,30 @@ class UserFunctionWrapper(UserFunction):
         :return: List of function results
         """
         if inputs.ndim != 2:
-            raise ValueError("User function should receive 2d array as an input, actual input dimensionality is {}".format(inputs.ndim))
+            raise ValueError(
+                "User function should receive 2d array as an input, actual input dimensionality is {}".format(
+                    inputs.ndim))
 
         _log.info("Evaluating user function for {} point(s)".format(inputs.shape[0]))
         outputs = self.f(inputs)
 
         if outputs.ndim != 2:
-            raise ValueError("User function should return 2d array as an output, actual output dimensionality is {}".format(outputs.ndim))
+            raise ValueError(
+                "User function should return 2d array as an output, actual output dimensionality is {}".format(
+                    outputs.ndim))
 
         results = []
         for x, y in zip(inputs, outputs):
             results.append(UserFunctionResult(x, y))
         return results
 
+
 class MultiSourceFunctionWrapper(UserFunction):
     """
     Wraps a list of python functions that each correspond to different information source.
     """
 
-    def __init__(self, f: List, source_index: int=-1) -> None:
+    def __init__(self, f: List, source_index: int = -1) -> None:
         """
         :param f: A list of python function that take in a 2d numpy ndarrays of inputs and return 2d numpy ndarrays
                   of outputs.
@@ -80,7 +87,9 @@ class MultiSourceFunctionWrapper(UserFunction):
         """
 
         if inputs.ndim != 2:
-            raise ValueError("User function should receive 2d array as an input, actual input dimensionality is {}".format(inputs.ndim))
+            raise ValueError(
+                "User function should receive 2d array as an input, actual input dimensionality is {}".format(
+                    inputs.ndim))
 
         n_sources = len(self.f)
 

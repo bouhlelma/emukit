@@ -11,6 +11,7 @@ from ..interfaces import IModel
 import logging
 _log = logging.getLogger(__name__)
 
+
 class ModelUpdater(abc.ABC):
     @abc.abstractmethod
     def update(self, loop_state: LoopState) -> None:
@@ -24,6 +25,7 @@ class ModelUpdater(abc.ABC):
 
 class FixedIntervalUpdater(ModelUpdater):
     """ Updates hyper-parameters every nth iteration, where n is defined by the user """
+
     def __init__(self, model: IModel, interval: int = 1) -> None:
         """
         :param model: Emukit emulator model
