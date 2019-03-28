@@ -65,7 +65,7 @@ class DGP_Base(Model):
         :param Y: List of training targets where each element of the list is a numpy array corresponding to the inputs of one fidelity.
         :param likelihood: gpflow likelihood object for use at the final layer
         :param layers: List of doubly_stochastic_dgp.layers.Layer objects
-        :param minibatch_size: Minibatch size if using minibatch training (NOTE: note functioning yet)
+        :param minibatch_size: Minibatch size if using minibatch training
         :param num_samples: Number of samples when propagating predictions through layers
         :param kwargs: kwarg inputs to gpflow.models.Model
         """
@@ -74,6 +74,7 @@ class DGP_Base(Model):
 
         self.Y_list = Y
         self.X_list = X
+        self.minibatch_size = minibatch_size
 
         self.num_samples = num_samples
 
@@ -83,10 +84,12 @@ class DGP_Base(Model):
 
         if minibatch_size:
             for i, (x, y) in enumerate(zip(X, Y)):
+                setattr(self, 'num_data' + str(i), x.shape[0])
                 setattr(self, 'X' + str(i), Minibatch(x, minibatch_size, seed=0))
                 setattr(self, 'Y' + str(i), Minibatch(x, minibatch_size, seed=0))
         else:
             for i, (x, y) in enumerate(zip(X, Y)):
+                setattr(self, 'num_data' + str(i), x.shape[0])
                 setattr(self, 'X' + str(i), DataHolder(x))
                 setattr(self, 'Y' + str(i), DataHolder(y))
 
@@ -216,7 +219,10 @@ class DGP_Base(Model):
             X_l = getattr(self, 'X' + str(fidelity))
             Y_l = getattr(self, 'Y' + str(fidelity))
 
-            L += tf.reduce_sum(self.E_log_p_Y(X_l, Y_l, fidelity))
+            n_data = getattr(self, 'num_data' + str(fidelity))
+            scale = tf.cast(n_data, float_type)/tf.cast(tf.shape(X_l)[0], float_type)
+
+            L += (tf.reduce_sum(self.E_log_p_Y(X_l, Y_l, fidelity)) * scale)
             KL += tf.reduce_sum(self.layers[fidelity].KL())
 
         self.L = L
@@ -253,7 +259,7 @@ class DGP_Base(Model):
         return tf.reduce_logsumexp(l - log_num_samples, axis=0)
 
     @classmethod
-    def make_mf_dgp(cls, X, Y, Z, add_linear=True):
+    def make_mf_dgp(cls, X, Y, Z, add_linear=True, minibatch_size=None):
         """
         Constructor for convenience. Constructs a mf-dgp model from training data and inducing point locations assuming
         that
@@ -264,6 +270,7 @@ class DGP_Base(Model):
         :param add_linear:
         :return:
         """
+
         n_fidelities = len(X)
 
         Din = X[0].shape[1]
@@ -303,7 +310,7 @@ class DGP_Base(Model):
 
         layers = init_layers_mf(Y, Z, kernels, num_outputs=Dout)
 
-        model = DGP_Base(X, Y, Gaussian(), layers, num_samples=10, minibatch_size=None)
+        model = DGP_Base(X, Y, Gaussian(), layers, num_samples=10, minibatch_size=minibatch_size)
 
         return model
 
@@ -368,9 +375,10 @@ class MultiFidelityDeepGP(IModel):
     Both sets of inducing points are initialized at low fidelity training data locations.
     """
 
-    def __init__(self, X, Y, Z=None, n_iter=5000, fix_inducing=True, multi_step_training=True):
+    def __init__(self, X, Y, Z=None, n_iter=5000, fix_inducing=True, multi_step_training=True, minibatch_size=None):
         self._Y = Y
         self._X = X
+        self.minibatch_size = minibatch_size
 
         if Z is None:
             self.Z = self._make_inducing_points(X, Y)
@@ -386,17 +394,10 @@ class MultiFidelityDeepGP(IModel):
         self.multi_step_training = multi_step_training
 
     def set_data(self, X: np.ndarray, Y: np.ndarray) -> None:
-        """
-        TODO: Implement this method such that the variational parameters don't change
-
-        :param X: Array of points to set as training inputs
-        :param Y: Array of points to set as training targets
-        """
         raise NotImplementedError()
 
-    @staticmethod
-    def _get_model(X, Y, Z):
-        return DGP_Base.make_mf_dgp(X, Y, Z)
+    def _get_model(self, X, Y, Z):
+        return DGP_Base.make_mf_dgp(X, Y, Z, minibatch_size=self.minibatch_size)
 
     def predict(self, X: np.array) -> Tuple[np.array, np.array]:
         # assume high fidelity only!!!!
