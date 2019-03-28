@@ -9,15 +9,12 @@ This file requires the following packages:
 - gpflow
 - doubly_stochastic_dgp https://github.com/ICL-SML/Doubly-Stochastic-DGP/tree/master/doubly_stochastic_dgp
 """
-
-# TODO: allow number of iterations to be changed
-# TODO: merge minibatch version into this one
-# TODO: add verbose flag for printing
-
 from typing import List, Tuple
 
 import numpy as np
 import tensorflow as tf
+from doubly_stochastic_dgp.layers import SVGP_Layer
+from doubly_stochastic_dgp.utils import BroadcastingLikelihood
 from gpflow import ParamList, autoflow, params_as_tensors, settings
 from gpflow.actions import Action, Loop
 from gpflow.kernels import RBF, Linear, White
@@ -27,11 +24,8 @@ from gpflow.models.model import Model
 from gpflow.params import DataHolder, Minibatch
 from gpflow.training import AdamOptimizer
 
-from doubly_stochastic_dgp.layers import SVGP_Layer
-from doubly_stochastic_dgp.utils import BroadcastingLikelihood
-
+from ..convert_lists_to_array import convert_x_list_to_array, convert_y_list_to_array
 from ...core.interfaces import IModel
-from ..convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays, convert_y_list_to_array
 
 float_type = settings.float_type
 
@@ -78,8 +72,8 @@ class DGP_Base(Model):
 
         Model.__init__(self, **kwargs)
 
-        self.X_list = X
         self.Y_list = Y
+        self.X_list = X
 
         self.num_samples = num_samples
 
@@ -87,14 +81,14 @@ class DGP_Base(Model):
         # and so on.
         self._train_upto_fidelity = -1
 
-        x_array, y_array = convert_xy_lists_to_arrays(X, Y)
-
         if minibatch_size:
-            self.X = Minibatch(x_array, minibatch_size, seed=0)
-            self.Y = Minibatch(y_array, minibatch_size, seed=0)
+            for i, (x, y) in enumerate(zip(X, Y)):
+                setattr(self, 'X' + str(i), Minibatch(x, minibatch_size, seed=0))
+                setattr(self, 'Y' + str(i), Minibatch(x, minibatch_size, seed=0))
         else:
-            self.X = DataHolder(x_array)
-            self.Y = DataHolder(y_array)
+            for i, (x, y) in enumerate(zip(X, Y)):
+                setattr(self, 'X' + str(i), DataHolder(x))
+                setattr(self, 'Y' + str(i), DataHolder(y))
 
         self.num_layers = len(layers)
         self.layers = ParamList(layers)
@@ -219,14 +213,10 @@ class DGP_Base(Model):
             if (self._train_upto_fidelity != -1) and (fidelity > self._train_upto_fidelity):
                 continue
 
-            mask = tf.equal(self.X[:, -1], fidelity)
-            mask.set_shape([None])
-            X_l = tf.boolean_mask(self.X[:, :-1], mask)
-            Y_l = tf.boolean_mask(self.Y, mask)
+            X_l = getattr(self, 'X' + str(fidelity))
+            Y_l = getattr(self, 'Y' + str(fidelity))
 
-            self.X_l = X_l
             L += tf.reduce_sum(self.E_log_p_Y(X_l, Y_l, fidelity))
-
             KL += tf.reduce_sum(self.layers[fidelity].KL())
 
         self.L = L
